@@ -3,7 +3,7 @@
 // const server = "http://localhost/v1";
 
 // skycues.com
-const apikey = "5OFz8Vdop86qTzfaFMfxWsM3WMuO3fWGN1LxAp52VQG1jHIjxNgnzf";
+const apikey = "DbKNN9L9YAGxc5g4BLUseR2QjCPUErWu1MitaAHEOC9Wegd9CeHnRd";
 const server = "https://skycues.com/v1";
 
 const https = require('https');
