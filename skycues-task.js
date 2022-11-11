@@ -12,13 +12,13 @@ const FormData = require('form-data');
 const fs = require('fs');
 let jobid; 
 
-// node skycues-task.js --input <image or geojson file or directory> --output <output file or directory> --date <yyyy-mm-dd> --nirband <yes|no> --clouds <0-100> --mode <details|textures> 
-// node skycues-task.js --input D:/Desktop/skycues-sample/test-api-image.tiff --output out --mode details --date 2022-07-15 --clouds 30 --nirband yes
+// node skycues-task.js --input <image or geojson file or directory> --output <output file or directory> --date <yyyy-mm-dd> --nirband <yes|no> --clouds <0-100> --mode <details|textures> --bands <bands comma separated> 
+// node skycues-task.js --input D:/Desktop/skycues-sample/test-api-image.tiff --output out --mode details --date 2022-07-15 --clouds 30 --nirband yes --s2bands B2,B4,B8
 
 const args = process.argv.slice(2).join(" ");
 const params = args.split("--");
 
-let pathtoupload, output, isFile, date, nirband, clouds, mode, mergetiles, georeference;
+let pathtoupload, output, isFile, date, nirband, clouds, mode, mergetiles, georeference, s2bands;
 // pathtoupload = "D:/Desktop/skycues-sample/small-test.jpeg" 
 // output = "out" 
 // date = "2015-10-10"
@@ -52,6 +52,9 @@ for (let index = 0; index < params.length; index++) {
     }
     if (paramname == "georeference") {
         georeference = paramvalue.trim().toLocaleLowerCase() == 'no' ? "false" : "true";;
+    }
+    if (paramname == "s2bands") {
+        s2bands = paramvalue.trim().toUpperCase().split(",");
     }
 }
 
@@ -107,9 +110,21 @@ async function uploadFile (filetoupload) {
         if (georeference != undefined) {
             formData.append('geo_reference', georeference);
         }
-
-        mode = mode == "textures" ? "v0" : "v1";
-        formData.append('mode', mode);
+        if (s2bands != undefined) {
+            formData.append('s2bands', s2bands);
+        }
+        
+        let pmode = ""
+        if (mode == "textures") {
+            pmode = "v0";
+        }
+        if (mode == "details") {
+            pmode = "v1";
+        }
+        if (mode == "1m") {
+            pmode = "v2";
+        }
+        formData.append('mode', pmode);
 
         const uploadresponse = (await instance.post(server+'/order', formData, {
             headers: formData.getHeaders()
