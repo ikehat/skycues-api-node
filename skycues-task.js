@@ -54,7 +54,7 @@ for (let index = 0; index < params.length; index++) {
         georeference = paramvalue.trim().toLocaleLowerCase() == 'no' ? "false" : "true";;
     }
     if (paramname == "s2bands") {
-        s2bands = paramvalue.trim().toUpperCase().split(",");
+        s2bands = paramvalue.trim().toUpperCase();
     }
 }
 
